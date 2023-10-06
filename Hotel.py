@@ -22,6 +22,14 @@ class EntradaPersona:
         self.siguiente = None
 
 
+#Clase para guardar la informacion de las salidas
+class SalidaPersona:
+    def __init__(self, persona, numeroHab):
+        self.persona = persona
+        self.numeroHab = numeroHab
+        self.siguiente = None
+
+
 #Clase lista de personas
 class ListaPersonas:
     def __init__(self):
@@ -160,4 +168,52 @@ class Entradas:
                     print("\nPersona actualmente en el hotel")
                     print("Cedula: " + str(entrada_actual.persona.cedula) + " Nombre: " + str(entrada_actual.persona.nombre) + " Habitacion: " + str(entrada_actual.numero_habitacion))
                 else:
-                    print("\nPersona no reside actualmente en el hotel")       
+                    print("\nPersona no reside actualmente en el hotel")     
+
+
+#clase lista libro de salidas
+class Salidas:
+    def __init__(self, listaPersonas, listaHabitaciones):
+        self.cabeza = None
+        self.listaPersonas = listaPersonas
+        self.listaHabitaciones = listaHabitaciones
+
+    #registrar salida de persona
+    def registrar(self, cedula):
+        persona = self.listaPersonas.buscar(cedula)
+        if persona:
+            numeroHab = None
+            habitacion_actual = self.lista_habitaciones.cabeza
+            while habitacion_actual:
+                if habitacion_actual.huesped == persona:
+                    numeroHab = habitacion_actual.numeroHab
+                    break
+                habitacion_actual = habitacion_actual.siguiente
+
+            if numeroHab != None:
+                nueva_salida = SalidaPersona(persona, numeroHab)
+
+                if self.cabeza is None:
+                    self.cabeza = nueva_salida
+                else:
+                    salida_actual = self.cabeza
+                    while salida_actual.siguiente:
+                        salida_actual = salida_actual.siguiente
+                    salida_actual.siguiente = nueva_salida
+
+                # Liberar la habitacion en la lista de habitaciones
+                persona = None
+                self.lista_habitaciones.asignar(numeroHab, persona)
+                print("Salida registrada correctamente")
+            else:
+                print("Persona no encontrada en ninguna habitación")
+        else:
+            print("Persona no registrada")
+
+    # Imprimir lista de salidas
+    def imprimirSalidas(self):
+        print("\nLibro de salidas:")
+        salida_actual = self.cabeza
+        while salida_actual:
+            print("Cedula: " + str(salida_actual.persona.cedula) + " Nombre: " + str(salida_actual.persona.nombre) + " Habitación: " + str(salida_actual.numeroHab))
+            salida_actual = salida_actual.siguiente
